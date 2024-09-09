@@ -1,9 +1,8 @@
-
+###
 
 ### Installation
 This implementation is based on [mmdetection3d](https://github.com/open-mmlab/mmdetection3d) framework.
 Please refer to the original installation guide [getting_started.md](docs/en/getting_started.md), including MinkowskiEngine installation, replacing `open-mmlab/mmdetection3d` with `samsunglabs/tr3d`.
-
 
 The modification to the original repository is the modification of the indoor_eval file, which is used to save the results of the OD of each object for each scene under tr3d/data/sunrgbd/ODResults using the pickle file.
 
@@ -15,11 +14,11 @@ We follow the mmdetection3d data preparation protocol described in [scannet](dat
 
 
 **Testing**
+use test to storage od on test set of sunrgb，You need to prepare the data and download the checkpoint in advance.
 
 Test pre-trained model using [test](tools/dist_test.sh) with TR3D [configs](configs/tr3d):
 ```shell
-python tools/test.py configs/tr3d/tr3d_scannet-3d-18class.py \
-    work_dirs/tr3d_scannet-3d-18class/latest.pth --eval mAP
+python tools/test.py configs/tr3d/tr3d_sunrgbd-3d-10class.py checkpoints/tr3d_sunrgbd.pth --eval mAP
 ```
 
 
