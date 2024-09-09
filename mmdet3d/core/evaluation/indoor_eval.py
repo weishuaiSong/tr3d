@@ -1,10 +1,9 @@
-# Copyright (c) OpenMMLab. All rights reserved.
 import numpy as np
 import torch
 from mmcv.utils import print_log
 from terminaltables import AsciiTable
-
-
+import pickle
+import os
 def average_precision(recalls, precisions, mode='area'):
     """Calculate average precision (for single or multiple scales).
 
@@ -52,7 +51,6 @@ def average_precision(recalls, precisions, mode='area'):
             'Unrecognized mode, only "area" and "11points" are supported')
     return ap
 
-
 def eval_det_cls(pred, gt, iou_thr=None):
     """Generic functions to compute precision/recall for object detection for a
     single class.
@@ -68,9 +66,9 @@ def eval_det_cls(pred, gt, iou_thr=None):
             average precision.
     """
 
-    # {img_id: {'bbox': box structure, 'det': matched list}}
     class_recs = {}
     npos = 0
+    detection_status = {}  # New dictionary to track detection status
     for img_id in gt.keys():
         cur_gt_num = len(gt[img_id])
         if cur_gt_num != 0:
@@ -83,6 +81,7 @@ def eval_det_cls(pred, gt, iou_thr=None):
         det = [[False] * len(bbox) for i in iou_thr]
         npos += len(bbox)
         class_recs[img_id] = {'bbox': bbox, 'det': det}
+        detection_status[img_id] = [0] * len(bbox)  # Initialize all objects as undetected
 
     # construct dets
     image_ids = []
@@ -130,7 +129,6 @@ def eval_det_cls(pred, gt, iou_thr=None):
         if len(BBGT) > 0:
             # compute overlaps
             for j in range(len(BBGT)):
-                # iou = get_iou_main(get_iou_func, (bb, BBGT[j,...]))
                 iou = cur_iou[j]
                 if iou > iou_max:
                     iou_max = iou
@@ -141,6 +139,7 @@ def eval_det_cls(pred, gt, iou_thr=None):
                 if not R['det'][iou_idx][jmax]:
                     tp_thr[iou_idx][d] = 1.
                     R['det'][iou_idx][jmax] = 1
+                    detection_status[image_ids[d]][jmax] = 1  # Mark object as detected
                 else:
                     fp_thr[iou_idx][d] = 1.
             else:
@@ -158,8 +157,7 @@ def eval_det_cls(pred, gt, iou_thr=None):
         ap = average_precision(recall, precision)
         ret.append((recall, precision, ap))
 
-    return ret
-
+    return ret, detection_status
 
 def eval_map_recall(pred, gt, ovthresh=None):
     """Evaluate mAP and recall.
@@ -179,10 +177,17 @@ def eval_map_recall(pred, gt, ovthresh=None):
     """
 
     ret_values = {}
+    scene_detection_status = {}
     for classname in gt.keys():
         if classname in pred:
-            ret_values[classname] = eval_det_cls(pred[classname],
-                                                 gt[classname], ovthresh)
+            ret_values[classname], class_detection_status = eval_det_cls(pred[classname],
+                                                                         gt[classname], ovthresh)
+            # Merge class_detection_status into scene_detection_status
+            for scene_id, status in class_detection_status.items():
+                if scene_id not in scene_detection_status:
+                    scene_detection_status[scene_id] = {}
+                scene_detection_status[scene_id][classname] = status
+
     recall = [{} for i in ovthresh]
     precision = [{} for i in ovthresh]
     ap = [{} for i in ovthresh]
@@ -197,9 +202,36 @@ def eval_map_recall(pred, gt, ovthresh=None):
                 precision[iou_idx][label] = np.zeros(1)
                 ap[iou_idx][label] = np.zeros(1)
 
-    return recall, precision, ap
+    return recall, precision, ap, scene_detection_status
 
+# def indoor_eval(gt_annos,
+#                 dt_annos,
+#                 metric,
+#                 label2cat,
+#                 logger=None,
+#                 box_type_3d=None,
+#                 box_mode_3d=None):
+#     """Indoor Evaluation.
 
+#     Evaluate the result of the detection.
+
+#     Args:
+#         gt_annos (list[dict]): Ground truth annotations.
+#         dt_annos (list[dict]): Detection annotations. the dict
+#             includes the following keys
+
+#             - labels_3d (torch.Tensor): Labels of boxes.
+#             - boxes_3d (:obj:`BaseInstance3DBoxes`):
+#                 3D bounding boxes in Depth coordinate.
+#             - scores_3d (torch.Tensor): Scores of boxes.
+#         metric (list[float]): IoU thresholds for computing average precisions.
+#         label2cat (dict): Map from label to category.
+#         logger (logging.Logger | str, optional): The way to print the mAP
+#             summary. See `mmdet.utils.print_log()` for details. Default: None.
+
+#     Return:
+#         dict[str, float]: Dict of results.
+#     """
 def indoor_eval(gt_annos,
                 dt_annos,
                 metric,
@@ -207,30 +239,15 @@ def indoor_eval(gt_annos,
                 logger=None,
                 box_type_3d=None,
                 box_mode_3d=None):
-    """Indoor Evaluation.
-
-    Evaluate the result of the detection.
-
-    Args:
-        gt_annos (list[dict]): Ground truth annotations.
-        dt_annos (list[dict]): Detection annotations. the dict
-            includes the following keys
-
-            - labels_3d (torch.Tensor): Labels of boxes.
-            - boxes_3d (:obj:`BaseInstance3DBoxes`):
-                3D bounding boxes in Depth coordinate.
-            - scores_3d (torch.Tensor): Scores of boxes.
-        metric (list[float]): IoU thresholds for computing average precisions.
-        label2cat (dict): Map from label to category.
-        logger (logging.Logger | str, optional): The way to print the mAP
-            summary. See `mmdet.utils.print_log()` for details. Default: None.
-
-    Return:
-        dict[str, float]: Dict of results.
-    """
+    """Indoor Evaluation with detection tracking for each scene."""
     assert len(dt_annos) == len(gt_annos)
     pred = {}  # map {class_id: pred}
     gt = {}  # map {class_id: gt}
+    scene_detections = {}  # New dictionary to track detections per scene
+
+    # Create 'obj' directory if it doesn't exist
+    os.makedirs('obj', exist_ok=True)
+
     for img_id in range(len(dt_annos)):
         # parse detected annotations
         det_anno = dt_annos[img_id]
@@ -260,6 +277,7 @@ def indoor_eval(gt_annos,
             gt_boxes = box_type_3d(np.array([], dtype=np.float32))
             labels_3d = np.array([], dtype=np.int64)
 
+        scene_detections[img_id] = {}
         for i in range(len(labels_3d)):
             label = labels_3d[i]
             bbox = gt_boxes[i]
@@ -268,8 +286,37 @@ def indoor_eval(gt_annos,
             if img_id not in gt[label]:
                 gt[label][img_id] = []
             gt[label][img_id].append(bbox)
+            scene_detections[img_id][i] = 0  # Initialize as not detected
 
-    rec, prec, ap = eval_map_recall(pred, gt, metric)
+    for label in gt.keys():
+        if label in pred:
+            for img_id in gt[label].keys():
+                if img_id in pred[label]:
+                    if not pred[label][img_id] or not gt[label][img_id]:
+                        continue
+
+                    pred_boxes = torch.stack([p[0].tensor.view(-1) for p in pred[label][img_id]])
+                    gt_boxes = torch.stack([g.tensor.view(-1) for g in gt[label][img_id]])
+                    
+                    iou = box_type_3d.overlaps(
+                        box_type_3d(pred_boxes),
+                        box_type_3d(gt_boxes)
+                    )
+                    max_ious = iou.max(dim=0)[0]
+                    for i, max_iou in enumerate(max_ious):
+                        if max_iou >= 0.5:
+                            scene_detections[img_id][i] = 1
+
+    # Save individual detection results
+    results_dir = './data/sunrgbd/ODResults'
+    os.makedirs(results_dir, exist_ok=True)
+
+    for img_id, detections in scene_detections.items():
+        filename = os.path.join(results_dir, f'{img_id+1:06d}.pkl')
+        with open(filename, 'wb') as f:
+            pickle.dump(detections, f)
+
+    rec, prec, ap, scene_detection_status = eval_map_recall(pred, gt, metric)
     ret_dict = dict()
     header = ['classes']
     table_columns = [[label2cat[label]
@@ -278,7 +325,7 @@ def indoor_eval(gt_annos,
     for i, iou_thresh in enumerate(metric):
         header.append(f'AP_{iou_thresh:.2f}')
         header.append(f'AR_{iou_thresh:.2f}')
-        rec_list = []
+        rec_list = []   
         for label in ap[i].keys():
             ret_dict[f'{label2cat[label]}_AP_{iou_thresh:.2f}'] = float(
                 ap[i][label][0])
