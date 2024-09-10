@@ -70,7 +70,7 @@ We follow the mmdetection3d data preparation protocol described in [scannet](dat
 Here we only need to use the sunrgb data  
 In this process you need to use matlab to process the data, you can through the matlab official website to[download](https://www.mathworks.com/products/matlab.html), if you are using on linux system and can not be installed through the network then please use on windows system and use download but do not install and then move this file to your linux system under the installation directory of matlab installation installation
 
-Download the checkpoint and place it in the tr3dresult\checkpoints directory.  
+Download the checkpoint and place it in the **tr3dresult\checkpoints directory**.  
 [model](https://github.com/samsunglabs/tr3d/releases/download/v1.0/tr3d_sunrgbd.pth)
 
 
