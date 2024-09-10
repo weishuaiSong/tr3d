@@ -21,8 +21,8 @@ If you are experienced with PyTorch and have already installed it, just skip thi
 **Step 1.** Create a conda environment and activate it.
 
 ```shell
-conda create --name openmmlab python=3.8 -y
-conda activate openmmlab
+conda create --name tr3d python=3.8 -y
+conda activate tr3d
 ```
 
 **Step 2.** Install PyTorch following [official instructions](https://pytorch.org/get-started/locally/), e.g.
@@ -56,10 +56,13 @@ pip install -e .
 
 **Installation of Minkowski Engine**
 Remember that you need to install pytorch before you install Minkowski Engine to avoid error
+
 ```shell
 pip install ninja
 conda install openblas-devel -c anaconda
-
+git clone https://github.com/NVIDIA/MinkowskiEngine
+cd MinkowskiEngine
+python setup.py install --blas_include_dirs=${CONDA_PREFIX}/include --blas=openblas
 ```
 
 ### Data preparation and checkpoint download
