@@ -5,7 +5,7 @@ The modification to the original repository is the modification of the indoor_ev
 This implementation is based on [mmdetection3d](https://github.com/open-mmlab/mmdetection3d) framework.
 Please refer to the original installation guide [getting_started.md](docs/en/getting_started.md), including MinkowskiEngine installation, replacing `open-mmlab/mmdetection3d` with `weishuaiSong/tr3dodresult`. 
 
-'''python
+```shell
 pip install openmim
 mim install mmcv-full
 mim install mmdet
@@ -13,7 +13,7 @@ mim install mmsegmentation
 git clone https://github.com/weishuaiSong/tr3dodresult
 cd tr3dodresult
 pip install -e .
-'''
+```
 
 
 ### Getting Started
