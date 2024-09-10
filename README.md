@@ -50,8 +50,8 @@ pip install openmim
 mim install mmcv-full
 mim install mmdet
 mim install mmsegmentation
-git clone https://github.com/weishuaiSong/tr3dodresult
-cd tr3dodresult
+git clone https://github.com/weishuaiSong/tr3d
+cd tr3d
 pip install -e .
 ```
 
