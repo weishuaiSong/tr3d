@@ -81,6 +81,13 @@ Test pre-trained model using [test](tools/dist_test.sh) with TR3D [configs](conf
 ```shell
 python tools/test.py configs/tr3d/tr3d_sunrgbd-3d-10class.py checkpoints/tr3d_sunrgbd.pth --eval mAP
 ```
+If you need to generate all the data in the sunrgb dataset use it： 
+```shell
+python mergedata.py
+```
+```shell
+python tools/test.py configs/tr3d/tr3d_sunrgbd-3d-10classall.py checkpoints/tr3d_sunrgbd.pth --eval mAP
+```
 The obtained file will be stored separately under **tr3d/data/sunrgbd/ODResults**, with the same name as the corresponding point cloud, and the content of the storage is a dictionary, the corresponding key is the object id, and the value is whether or not the object has been detected, and if it is then 1 otherwise 0.
 
 
