@@ -1,6 +1,5 @@
 ###
-The modification to the original repository is the modification of the tr3dodresult/mmdet3d/core/evaluation
-/indoor_eval.py file, which is used to save the results of the OD of each object for each scene under tr3d/data/sunrgbd/ODResults using the pickle file.
+The modification to the original repository is the modification of the **tr3d/mmdet3d/core/evaluation/indoor_eval.py** file, which is used to save the results of the OD of each object for each scene under **tr3d/data/sunrgbd/ODResults** using the pickle file.
 
 
 ### Prerequisites
@@ -69,6 +68,7 @@ python setup.py install --blas_include_dirs=${CONDA_PREFIX}/include --blas=openb
 ### Data preparation and checkpoint download
 We follow the mmdetection3d data preparation protocol described in [scannet](data/scannet), [sunrgbd](data/sunrgbd), and [s3dis](data/s3dis).  
 Here we only need to use the sunrgb data  
+In this process you need to use matlab to process the data, you can through the matlab official website to[download](https://www.mathworks.com/products/matlab.html), if you are using on linux system and can not be installed through the network then please use on windows system and use download but do not install and then move this file to your linux system under the installation directory of matlab installation installation
 
 Download the checkpoint and place it in the tr3dresult\checkpoints directory.  
 [model](https://github.com/samsunglabs/tr3d/releases/download/v1.0/tr3d_sunrgbd.pth)
@@ -81,7 +81,7 @@ Test pre-trained model using [test](tools/dist_test.sh) with TR3D [configs](conf
 ```shell
 python tools/test.py configs/tr3d/tr3d_sunrgbd-3d-10class.py checkpoints/tr3d_sunrgbd.pth --eval mAP
 ```
-The obtained file will be stored separately under tr3d/data/sunrgbd/ODResults, with the same name as the corresponding point cloud, and the content of the storage is a dictionary, the corresponding key is the object id, and the value is whether or not the object has been detected, and if it is then 1 otherwise 0.
+The obtained file will be stored separately under **tr3d/data/sunrgbd/ODResults**, with the same name as the corresponding point cloud, and the content of the storage is a dictionary, the corresponding key is the object id, and the value is whether or not the object has been detected, and if it is then 1 otherwise 0.
 
 
 **TR3D 3D Detection**
