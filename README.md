@@ -16,15 +16,16 @@ pip install -e .
 ```
 
 
-### Getting Started
+### Data preparation and checkpoint download
+We follow the mmdetection3d data preparation protocol described in [scannet](data/scannet), [sunrgbd](data/sunrgbd), and [s3dis](data/s3dis).  
+Here we only need to use the sunrgb data  
 
-Please see [getting_started.md](docs/getting_started.md) for basic usage examples.
-We follow the mmdetection3d data preparation protocol described in [scannet](data/scannet), [sunrgbd](data/sunrgbd), and [s3dis](data/s3dis).
+Download the checkpoints and place them in the tr3dresult\checkpoints directory.  
+[model](https://github.com/samsunglabs/tr3d/releases/download/v1.0/tr3d_s3dis.pth)
 
 
 
-### 
-use test to storage od on test set of sunrgb，You need to prepare the data and download the checkpoint in advance.
+### Data generation
 
 Test pre-trained model using [test](tools/dist_test.sh) with TR3D [configs](configs/tr3d):
 ```shell
