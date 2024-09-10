@@ -14,7 +14,7 @@ We follow the mmdetection3d data preparation protocol described in [scannet](dat
 
 
 
-**Testing**
+### 
 use test to storage od on test set of sunrgb，You need to prepare the data and download the checkpoint in advance.
 
 Test pre-trained model using [test](tools/dist_test.sh) with TR3D [configs](configs/tr3d):
