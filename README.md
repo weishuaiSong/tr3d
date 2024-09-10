@@ -1,5 +1,6 @@
 ###
-The modification to the original repository is the modification of the indoor_eval file, which is used to save the results of the OD of each object for each scene under tr3d/data/sunrgbd/ODResults using the pickle file.
+The modification to the original repository is the modification of the tr3dodresult/mmdet3d/core/evaluation
+/indoor_eval.py file, which is used to save the results of the OD of each object for each scene under tr3d/data/sunrgbd/ODResults using the pickle file.
 
 
 ### Prerequisites
