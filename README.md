@@ -42,8 +42,8 @@ conda install pytorch torchvision cpuonly -c pytorch
 
 ### Installation
 This implementation is based on [mmdetection3d](https://github.com/open-mmlab/mmdetection3d) framework.
-Please refer to the original installation guide [getting_started.md](docs/en/getting_started.md), including MinkowskiEngine installation, replacing `open-mmlab/mmdetection3d` with `weishuaiSong/tr3dodresult`. 
-
+Please refer to the original installation guide [getting_started.md](docs/en/getting_started.md), including MinkowskiEngine installation, replacing `open-mmlab/mmdetection3d` with `weishuaiSong/tr3dodresult`.  
+In the meantime you can quickly install it with the following command  
 ```shell
 pip install openmim
 mim install mmcv-full
@@ -69,8 +69,8 @@ python setup.py install --blas_include_dirs=${CONDA_PREFIX}/include --blas=openb
 We follow the mmdetection3d data preparation protocol described in [scannet](data/scannet), [sunrgbd](data/sunrgbd), and [s3dis](data/s3dis).  
 Here we only need to use the sunrgb data  
 
-Download the checkpoints and place them in the tr3dresult\checkpoints directory.  
-[model](https://github.com/samsunglabs/tr3d/releases/download/v1.0/tr3d_s3dis.pth)
+Download the checkpoint and place it in the tr3dresult\checkpoints directory.  
+[model](https://github.com/samsunglabs/tr3d/releases/download/v1.0/tr3d_sunrgbd.pth)
 
 
 
