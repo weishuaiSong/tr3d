@@ -1,6 +1,45 @@
 ###
 The modification to the original repository is the modification of the indoor_eval file, which is used to save the results of the OD of each object for each scene under tr3d/data/sunrgbd/ODResults using the pickle file.
 
+
+### Prerequisites
+In this section we demonstrate how to prepare an environment with PyTorch.
+MMDection3D works on Linux, Windows (experimental support) and macOS and requires the following packages:
+
+- Python 3.6+
+- PyTorch 1.3+
+- CUDA 9.2+ (If you build PyTorch from source, CUDA 9.0 is also compatible)
+- GCC 5+
+- [MMCV](https://mmcv.readthedocs.io/en/latest/#installation)
+
+```{note}
+If you are experienced with PyTorch and have already installed it, just skip this part and jump to the [next section](#installation). Otherwise, you can follow these steps for the preparation.
+```
+
+**Step 0.** Download and install Miniconda from the [official website](https://docs.conda.io/en/latest/miniconda.html).
+
+**Step 1.** Create a conda environment and activate it.
+
+```shell
+conda create --name openmmlab python=3.8 -y
+conda activate openmmlab
+```
+
+**Step 2.** Install PyTorch following [official instructions](https://pytorch.org/get-started/locally/), e.g.
+
+On GPU platforms:
+
+```shell
+conda install pytorch torchvision -c pytorch
+```
+
+On CPU platforms:
+
+```shell
+conda install pytorch torchvision cpuonly -c pytorch
+```
+
+
 ### Installation
 This implementation is based on [mmdetection3d](https://github.com/open-mmlab/mmdetection3d) framework.
 Please refer to the original installation guide [getting_started.md](docs/en/getting_started.md), including MinkowskiEngine installation, replacing `open-mmlab/mmdetection3d` with `weishuaiSong/tr3dodresult`. 
@@ -15,6 +54,13 @@ cd tr3dodresult
 pip install -e .
 ```
 
+**Installation of Minkowski Engine**
+Remember that you need to install pytorch before you install Minkowski Engine to avoid error
+```shell
+pip install ninja
+conda install openblas-devel -c anaconda
+
+```
 
 ### Data preparation and checkpoint download
 We follow the mmdetection3d data preparation protocol described in [scannet](data/scannet), [sunrgbd](data/sunrgbd), and [s3dis](data/s3dis).  
