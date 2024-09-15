@@ -77,24 +77,60 @@ Download the checkpoint and place it in the **tr3d\checkpoints** directory.
 
 ### Data generation
 
-Test pre-trained model using [test](tools/dist_test.sh) with TR3D [configs](configs/tr3d):
+If you need to generate all the data  dataset use it： 
+
+```shell
+python mergedata.py --datasets sunrgbd scannet s3dis
+```
+if you want to only use one dataset for datageration：
+
+```shell
+python mergedata.py --datasets  scannet 
+```
+
+the first script is only for testset datageration.  
+The second script is for data generation for the full data set.  
+*sunrgb*：
 ```shell
 python tools/test.py configs/tr3d/tr3d_sunrgbd-3d-10class.py checkpoints/tr3d_sunrgbd.pth --eval mAP
-```
-If you need to generate all the data in the *sunrgb* dataset use it： 
-```shell
-python mergedata.py
 ```
 ```shell
 python tools/test.py configs/tr3d/tr3d_sunrgbd-3d-10classall.py checkpoints/tr3d_sunrgbd.pth --eval mAP
 ```
-If you need to generate all the data in the *s3dis* dataset use it：
+
+ *s3dis* ：
+ 
+```shell
+python tools/test.py configs/tr3d/tr3d_s3dis-3d-5class.py checkpoints/tr3d_s3dis.pth --eval mAP
+```
 
 ```shell
 python tools/test.py configs/tr3d/tr3d_s3dis-3d-5classall.py checkpoints/tr3d_s3dis.pth --eval mAP
 ```
+*scannet*：
+```shell
+python tools/test.py configs/tr3d/tr3d_s3dis-3d-5class.py checkpoints/tr3d_scannet.pth --eval mAP
+```
 
-The obtained file will be stored separately under **tr3d/data/datasetname/ODResults**, with the same name as the corresponding point cloud, and the content of the storage is a dictionary, the corresponding key is the object id, and the value is whether or not the object has been detected, and if it is then 1 otherwise 0.
+```shell
+python tools/test.py configs/tr3d/tr3d_s3dis-3d-5classall.py checkpoints/tr3d_scannet.pth --eval mAP
+```
+
+
+
+The obtained file will be stored separately under **tr3d/data/datasetname/ODResults**, with the same name as the corresponding point cloud, and the content of the storage is a dictionary, the corresponding key is the object id, and the value is whether or not the object has been detected, and if it is then 1 otherwise 0.  
+
+**Data generation for multiple datasets using shell scripts**：
+only test dataset：  
+
+```shell
+sh ./datagenerate.sh 
+```
+for full dataset:
+
+```shell
+sh ./datagenerate.sh all
+```
 
 
 **TR3D 3D Detection**
