@@ -25,11 +25,11 @@ python tools/test.py $config1 checkpoints/tr3d_sunrgbd.pth --eval mAP
 
 
 # Run the second command
-config2=$(get_config_file "configs/tr3d/tr3d_tr3d_s3dis-3d-5class.py")
+config2=$(get_config_file "configs/tr3d/tr3d_s3dis-3d-5class.py")
 echo "Running: python tools/test.py $config2 checkpoints/tr3d_s3dis.pth --eval mAP"
-python tools/test.py $config2 checkpoints/tr3d_sunrgbd.pth --eval mAP
+python tools/test.py $config2 checkpoints/tr3d_s3dis.pth --eval mAP
 
-# Run the third command
+# # Run the third command
 config3=$(get_config_file "configs/tr3d/tr3d_scannet-3d-18class.py")
 echo "Running: python tools/test.py $config3 checkpoints/tr3d_scannet.pth --eval mAP"
 python tools/test.py $config3 checkpoints/tr3d_scannet.pth --eval mAP
