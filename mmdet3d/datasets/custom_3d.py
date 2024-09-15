@@ -306,7 +306,7 @@ class Custom3DDataset(Dataset):
                  show=False,
                  out_dir=None,
                  pipeline=None,
-                 
+                 save_dir=None
                  ):
         """Evaluate.
 
@@ -350,7 +350,8 @@ class Custom3DDataset(Dataset):
             box_type_3d=self.box_type_3d,
             box_mode_3d=self.box_mode_3d,
             dataroot=dataroot,
-            pts_paths=pts_paths
+            pts_paths=pts_paths,
+            save_dir=save_dir
             )
         if show:
             self.show(results, out_dir, pipeline=pipeline)

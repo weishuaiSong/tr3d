@@ -240,7 +240,8 @@ def indoor_eval(gt_annos,
                 box_type_3d=None,
                 box_mode_3d=None,
                 dataroot=None,
-                pts_paths=None
+                pts_paths=None,
+                save_dir=None
                 ):
     """Indoor Evaluation with detection tracking for each scene."""
     assert len(dt_annos) == len(gt_annos)
@@ -311,7 +312,7 @@ def indoor_eval(gt_annos,
                             scene_detections[img_id][i] = 1
 
     # Save individual detection results
-    results_dir = os.path.join(dataroot,'ODResults')
+    results_dir = os.path.join(dataroot,save_dir)
     os.makedirs(results_dir, exist_ok=True)
 
     for img_id, detections in scene_detections.items():

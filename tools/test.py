@@ -113,6 +113,11 @@ def parse_args():
         default='none',
         help='job launcher')
     parser.add_argument('--local_rank', type=int, default=0)
+    parser.add_argument(
+    '--save-dir',
+    type=str,
+    default='ODResults',
+    help='Filename for saving results (without extension)')
     args = parser.parse_args()
     if 'LOCAL_RANK' not in os.environ:
         os.environ['LOCAL_RANK'] = str(args.local_rank)
@@ -141,6 +146,8 @@ def main():
 
     if args.out is not None and not args.out.endswith(('.pkl', '.pickle')):
         raise ValueError('The output file must be a pkl file.')
+    
+    save_dir=args.save_dir
 
     cfg = Config.fromfile(args.config)
     if args.cfg_options is not None:
@@ -253,7 +260,7 @@ def main():
             ]:
                 eval_kwargs.pop(key, None)
             eval_kwargs.update(dict(metric=args.eval, **kwargs))
-            print(dataset.evaluate(outputs, show=args.show, out_dir=args.show_dir, **eval_kwargs))
+            print(dataset.evaluate(outputs, show=args.show, out_dir=args.show_dir, save_dir=save_dir,**eval_kwargs))
 
 
 if __name__ == '__main__':
