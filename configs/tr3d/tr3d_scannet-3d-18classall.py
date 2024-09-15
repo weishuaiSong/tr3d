@@ -13,12 +13,12 @@ model = dict(
         type='TR3DHead',
         in_channels=128,
         n_reg_outs=6,
-        n_classes=5,
+        n_classes=18,
         voxel_size=voxel_size,
         assigner=dict(
             type='TR3DAssigner',
             top_pts_threshold=6,
-            label2level=[1, 0, 1, 1, 0]),
+            label2level=[0, 1, 0, 1, 1, 0, 1, 1, 0, 1, 1, 1, 0, 0, 0, 0, 1, 0]),
         bbox_loss=dict(type='AxisAlignedIoULoss', mode='diou', reduction='none')),
     train_cfg=dict(),
     test_cfg=dict(nms_pre=1000, iou_thr=.5, score_thr=.01))
@@ -43,12 +43,12 @@ load_from = None
 resume_from = None
 workflow = [('train', 1)]
 
-dataset_type = 'S3DISDataset'
-data_root = './data/s3dis/'
-class_names = ('table', 'chair', 'sofa', 'bookcase', 'board')
-train_area = [1, 2, 3, 4, 6]
-test_area = 5
-
+dataset_type = 'ScanNetDataset'
+data_root = './data/scannet/'
+class_names = ('cabinet', 'bed', 'chair', 'sofa', 'table', 'door', 'window',
+               'bookshelf', 'picture', 'counter', 'desk', 'curtain',
+               'refrigerator', 'showercurtrain', 'toilet', 'sink', 'bathtub',
+               'garbagebin')
 train_pipeline = [
     dict(
         type='LoadPointsFromFile',
@@ -58,7 +58,10 @@ train_pipeline = [
         load_dim=6,
         use_dim=[0, 1, 2, 3, 4, 5]),
     dict(type='LoadAnnotations3D'),
-    dict(type='PointSample', num_points=n_points),
+    dict(type='GlobalAlignment', rotation_axis=2),
+    # we do not sample 100k points for scannet, as very few scenes have
+    # significantly more then 100k points. so we sample 33 to 100% of them
+    dict(type='PointSample', num_points=.33),
     dict(
         type='RandomFlip3D',
         sync_2d=False,
@@ -66,15 +69,13 @@ train_pipeline = [
         flip_ratio_bev_vertical=.5),
     dict(
         type='GlobalRotScaleTrans',
-        rot_range=[0, 0],
-        scale_ratio_range=[.95, 1.05],
+        rot_range=[-.02, .02],
+        scale_ratio_range=[.9, 1.1],
         translation_std=[.1, .1, .1],
         shift_height=False),
     dict(type='NormalizePointsColor', color_mean=None),
     dict(type='DefaultFormatBundle3D', class_names=class_names),
-    dict(
-        type='Collect3D',
-        keys=['points', 'gt_bboxes_3d', 'gt_labels_3d'])
+    dict(type='Collect3D', keys=['points', 'gt_bboxes_3d', 'gt_labels_3d'])
 ]
 test_pipeline = [
     dict(
@@ -84,13 +85,17 @@ test_pipeline = [
         use_color=True,
         load_dim=6,
         use_dim=[0, 1, 2, 3, 4, 5]),
+    dict(type='GlobalAlignment', rotation_axis=2),
     dict(
         type='MultiScaleFlipAug3D',
         img_scale=(1333, 800),
         pts_scale_ratio=1,
         flip=False,
         transforms=[
-            dict(type='PointSample', num_points=n_points),
+            # we do not sample 100k points for scannet, as very few scenes have
+            # significantly more then 100k points. so it doesn't affect inference
+            # time and we ca accept all points
+            # dict(type='PointSample', num_points=n_points),
             dict(type='NormalizePointsColor', color_mean=None),
             dict(
                 type='DefaultFormatBundle3D',
@@ -101,27 +106,22 @@ test_pipeline = [
 ]
 data = dict(
     samples_per_gpu=16,
-    workers_per_gpu=16,
+    workers_per_gpu=4,
     train=dict(
         type='RepeatDataset',
-        times=13,
+        times=15,
         dataset=dict(
-            type='ConcatDataset',
-            datasets=[
-                dict(
-                    type=dataset_type,
-                    data_root=data_root,
-                    ann_file=data_root + f's3dis_infos_Area_{i}.pkl',
-                    pipeline=train_pipeline,
-                    filter_empty_gt=False,
-                    classes=class_names,
-                    box_type_3d='Depth') for i in train_area
-            ],
-            separate_eval=False)),
+            type=dataset_type,
+            data_root=data_root,
+            ann_file=data_root + 'scannet_infos_train.pkl',
+            pipeline=train_pipeline,
+            filter_empty_gt=False,
+            classes=class_names,
+            box_type_3d='Depth')),
     val=dict(
         type=dataset_type,
         data_root=data_root,
-        ann_file=data_root + f's3dis_infos.pkl',
+        ann_file=data_root + 'scannet_infos.pkl',
         pipeline=test_pipeline,
         classes=class_names,
         test_mode=True,
@@ -129,7 +129,7 @@ data = dict(
     test=dict(
         type=dataset_type,
         data_root=data_root,
-        ann_file=data_root + f's3dis_infos.pkl',
+        ann_file=data_root + 'scannet_infos.pkl',
         pipeline=test_pipeline,
         classes=class_names,
         test_mode=True,
