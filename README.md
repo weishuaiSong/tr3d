@@ -94,7 +94,7 @@ If you need to generate all the data in the *s3dis* dataset use it：
 python tools/test.py configs/tr3d/tr3d_s3dis-3d-5classall.py checkpoints/tr3d_s3dis.pth --eval mAP
 ```
 
-The obtained file will be stored separately under **tr3d/data/<datasetname>/ODResults**, with the same name as the corresponding point cloud, and the content of the storage is a dictionary, the corresponding key is the object id, and the value is whether or not the object has been detected, and if it is then 1 otherwise 0.
+The obtained file will be stored separately under **tr3d/data/datasetname/ODResults**, with the same name as the corresponding point cloud, and the content of the storage is a dictionary, the corresponding key is the object id, and the value is whether or not the object has been detected, and if it is then 1 otherwise 0.
 
 
 **TR3D 3D Detection**
