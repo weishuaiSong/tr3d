@@ -88,8 +88,6 @@ if you want to only use one dataset for datageration：
 python mergedata.py --datasets  scannet 
 ```
 
-Test pre-trained model using [test](tools/dist_test.sh) with TR3D [configs](configs/tr3d):
-
 the first script is only for testset datageration.  
 The second script is for data generation for the full data set.  
 *sunrgb*：
