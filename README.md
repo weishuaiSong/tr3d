@@ -1,5 +1,5 @@
 ###
-The modification to the original repository is the modification of the **tr3d/mmdet3d/core/evaluation/indoor_eval.py** file, which is used to save the results of the OD of each object for each scene under **tr3d/data/sunrgbd/ODResults** using the pickle file.
+The modification to the original repository is the modification of the **tr3d/mmdet3d/core/evaluation/indoor_eval.py** file, which is used to save the results of the OD of each object for each scene under **tr3d/data/sunrgbd/ODResults** using the pickle file.**Added save-dir parameter to indicate the name of the storage folder**
 
 
 ### Prerequisites
@@ -118,7 +118,13 @@ python tools/test.py configs/tr3d/tr3d_s3dis-3d-5classall.py checkpoints/tr3d_sc
 
 
 
-The obtained file will be stored separately under **tr3d/data/datasetname/ODResults**, with the same name as the corresponding point cloud, and the content of the storage is a dictionary, the corresponding key is the object id, and the value is whether or not the object has been detected, and if it is then 1 otherwise 0.  
+The default data storage location is  **tr3d/data/datasetname/ODResults**, with the same name as the corresponding point cloud, and the content of the storage is a dictionary, the corresponding key is the object id, and the value is whether or not the object has been detected, and if it is then 1 otherwise 0.  
+You can use the save-dir parameter to indicate the name of the folder where the files are stored, for example：
+```shell
+python tools/test.py configs/tr3d/tr3d_s3dis-3d-5class.py checkpoints/tr3d_s3dis.pth --eval mAP --save-dir test1111
+```
+This command stores the file in the **tr3d/data/s3dis/test1111**
+
 
 **Data generation for multiple datasets using shell scripts**：
 only test dataset：  
@@ -131,7 +137,10 @@ for full dataset:
 ```shell
 sh ./datagenerate.sh all
 ```
-
+You can also use a parameter to adjust the name of the folder where the generated data is stored, for example：
+```shell
+sh ./datagenerate.sh all --save-dir=yourdirname
+```
 
 **TR3D 3D Detection**
 
