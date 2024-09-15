@@ -305,7 +305,9 @@ class Custom3DDataset(Dataset):
                  logger=None,
                  show=False,
                  out_dir=None,
-                 pipeline=None):
+                 pipeline=None,
+                 
+                 ):
         """Evaluate.
 
         Evaluation in indoor protocol.
@@ -337,6 +339,8 @@ class Custom3DDataset(Dataset):
         ), f'Expect elements in results to be dict, got {type(results[0])}.'
         gt_annos = [info['annos'] for info in self.data_infos]
         label2cat = {i: cat_id for i, cat_id in enumerate(self.CLASSES)}
+        dataroot=self.data_root
+        pts_paths=[info['pts_path'] for info in self.data_infos]
         ret_dict = indoor_eval(
             gt_annos,
             results,
@@ -344,7 +348,10 @@ class Custom3DDataset(Dataset):
             label2cat,
             logger=logger,
             box_type_3d=self.box_type_3d,
-            box_mode_3d=self.box_mode_3d)
+            box_mode_3d=self.box_mode_3d,
+            dataroot=dataroot,
+            pts_paths=pts_paths
+            )
         if show:
             self.show(results, out_dir, pipeline=pipeline)
 

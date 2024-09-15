@@ -238,7 +238,10 @@ def indoor_eval(gt_annos,
                 label2cat,
                 logger=None,
                 box_type_3d=None,
-                box_mode_3d=None):
+                box_mode_3d=None,
+                dataroot=None,
+                pts_paths=None
+                ):
     """Indoor Evaluation with detection tracking for each scene."""
     assert len(dt_annos) == len(gt_annos)
     pred = {}  # map {class_id: pred}
@@ -308,11 +311,11 @@ def indoor_eval(gt_annos,
                             scene_detections[img_id][i] = 1
 
     # Save individual detection results
-    results_dir = './data/sunrgbd/ODResults'
+    results_dir = os.path.join(dataroot,'ODResults')
     os.makedirs(results_dir, exist_ok=True)
 
     for img_id, detections in scene_detections.items():
-        filename = os.path.join(results_dir, f'{img_id+1:06d}.pkl')
+        filename = os.path.join(results_dir, os.path.basename(pts_paths[img_id]))
         with open(filename, 'wb') as f:
             pickle.dump(detections, f)
 
