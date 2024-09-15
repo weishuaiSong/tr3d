@@ -89,6 +89,10 @@ python mergedata.py --datasets  scannet
 ```
 
 Test pre-trained model using [test](tools/dist_test.sh) with TR3D [configs](configs/tr3d):
+
+the first script is only for testset datageration
+The second script is for data generation for the full data set
+*sunrgb*：
 ```shell
 python tools/test.py configs/tr3d/tr3d_sunrgbd-3d-10class.py checkpoints/tr3d_sunrgbd.pth --eval mAP
 ```
@@ -96,8 +100,8 @@ python tools/test.py configs/tr3d/tr3d_sunrgbd-3d-10class.py checkpoints/tr3d_su
 python tools/test.py configs/tr3d/tr3d_sunrgbd-3d-10classall.py checkpoints/tr3d_sunrgbd.pth --eval mAP
 ```
 
-If you need to generate all the data in the *s3dis* dataset use it：
-
+ *s3dis* ：
+ 
 ```shell
 python tools/test.py configs/tr3d/tr3d_s3dis-3d-5class.py checkpoints/tr3d_s3dis.pth --eval mAP
 ```
@@ -105,7 +109,7 @@ python tools/test.py configs/tr3d/tr3d_s3dis-3d-5class.py checkpoints/tr3d_s3dis
 ```shell
 python tools/test.py configs/tr3d/tr3d_s3dis-3d-5classall.py checkpoints/tr3d_s3dis.pth --eval mAP
 ```
-same for scannet
+*scannet*：
 ```shell
 python tools/test.py configs/tr3d/tr3d_tr3d_s3dis-3d-5class.py checkpoints/tr3d_scannet.pth --eval mAP
 ```
