@@ -315,7 +315,7 @@ def indoor_eval(gt_annos,
     os.makedirs(results_dir, exist_ok=True)
 
     for img_id, detections in scene_detections.items():
-        filename = os.path.join(results_dir, os.path.basename(pts_paths[img_id]))
+        filename = os.path.join(results_dir, os.path.splitext(os.path.basename(pts_paths[img_id]))[0]+'pkl')
         with open(filename, 'wb') as f:
             pickle.dump(detections, f)
 
