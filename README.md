@@ -109,16 +109,28 @@ python tools/test.py configs/tr3d/tr3d_s3dis-3d-5classall.py checkpoints/tr3d_s3
 ```
 *scannet*：
 ```shell
-python tools/test.py configs/tr3d/tr3d_tr3d_s3dis-3d-5class.py checkpoints/tr3d_scannet.pth --eval mAP
+python tools/test.py configs/tr3d/tr3d_s3dis-3d-5class.py checkpoints/tr3d_scannet.pth --eval mAP
 ```
 
 ```shell
-python tools/test.py configs/tr3d/tr3d_tr3d_s3dis-3d-5classall.py checkpoints/tr3d_scannet.pth --eval mAP
+python tools/test.py configs/tr3d/tr3d_s3dis-3d-5classall.py checkpoints/tr3d_scannet.pth --eval mAP
 ```
 
 
 
-The obtained file will be stored separately under **tr3d/data/datasetname/ODResults**, with the same name as the corresponding point cloud, and the content of the storage is a dictionary, the corresponding key is the object id, and the value is whether or not the object has been detected, and if it is then 1 otherwise 0.
+The obtained file will be stored separately under **tr3d/data/datasetname/ODResults**, with the same name as the corresponding point cloud, and the content of the storage is a dictionary, the corresponding key is the object id, and the value is whether or not the object has been detected, and if it is then 1 otherwise 0.  
+
+**Data generation for multiple datasets using shell scripts**：
+only test dataset：  
+
+```shell
+sh ./datagenerate.sh 
+```
+for full dataset:
+
+```shell
+sh ./datagenerate.sh all
+```
 
 
 **TR3D 3D Detection**
