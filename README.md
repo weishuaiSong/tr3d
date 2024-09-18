@@ -71,13 +71,6 @@ We follow the mmdetection3d data preparation protocol described in [scannet](dat
 Here we only need to use the sunrgb data  
 In this process you need to use matlab to process the data, you can through the matlab official website to[download](https://www.mathworks.com/products/matlab.html), if you are using on linux system and can not be installed through the network then please use on windows system and use download but do not install and then move this file to your linux system under the installation directory of matlab installation installation
 
-Download the checkpoint and place it in the **tr3d\checkpoints** directory.  
-[model](https://github.com/samsunglabs/tr3d/releases/download/v1.0/tr3d_sunrgbd.pth)
-
-
-
-### Object Detection Results Data generation
-
 If you need to generate all the data  dataset use it： 
 
 mergedata will only merge some files for the following operations, it will not generate and store the results of the object detection.
@@ -90,6 +83,10 @@ if you want to only use one dataset for datageration：
 ```shell
 python mergedata.py --datasets  scannet 
 ```
+
+### Object Detection Results Data generation
+
+
 
 the first script is only for testset datageration.  
 The second script is for data generation for the full data set.  
