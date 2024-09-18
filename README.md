@@ -67,6 +67,7 @@ python setup.py install --blas_include_dirs=${CONDA_PREFIX}/include --blas=openb
 
 ### Data preparation and checkpoint download
 We follow the mmdetection3d data preparation protocol described in [scannet](data/scannet), [sunrgbd](data/sunrgbd), and [s3dis](data/s3dis).  
+
 Here we only need to use the sunrgb data  
 In this process you need to use matlab to process the data, you can through the matlab official website to[download](https://www.mathworks.com/products/matlab.html), if you are using on linux system and can not be installed through the network then please use on windows system and use download but do not install and then move this file to your linux system under the installation directory of matlab installation installation
 
@@ -75,9 +76,11 @@ Download the checkpoint and place it in the **tr3d\checkpoints** directory.
 
 
 
-### Data generation
+### Object Detection Results Data generation
 
 If you need to generate all the data  dataset use it： 
+
+mergedata will only merge some files for the following operations, it will not generate and store the results of the object detection.
 
 ```shell
 python mergedata.py --datasets sunrgbd scannet s3dis
