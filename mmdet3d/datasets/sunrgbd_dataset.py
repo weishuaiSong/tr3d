@@ -237,7 +237,9 @@ class SUNRGBDDataset(Custom3DDataset):
                  logger=None,
                  show=False,
                  out_dir=None,
-                 pipeline=None):
+                 pipeline=None,
+                 save_dir=None
+                 ):
         """Evaluate.
 
         Evaluation in indoor protocol.
@@ -263,7 +265,7 @@ class SUNRGBDDataset(Custom3DDataset):
         # evaluate 3D detection performance
         if isinstance(results[0], dict):
             return super().evaluate(results, metric, iou_thr, logger, show,
-                                    out_dir, pipeline)
+                                    out_dir, pipeline,save_dir)
         # evaluate 2D detection performance
         else:
             eval_results = OrderedDict()
